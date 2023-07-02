@@ -1,0 +1,103 @@
+<ngx-spinner fullScreen="false">
+  <p style="font-size: 20px; color: white">Processing...</p>
+</ngx-spinner>
+<div class="row">
+  <div class="col-sm-2">
+    <select class="form-control" #child_id (change)="getClasses(child_id.value);getClasses(child_id.value)"  [(ngModel)]="selectedChildId">
+      <option *ngFor="let ch of child" value="{{ch.id}}">{{ch.name}}</option>
+    </select>
+  </div>
+
+  <div class="col-sm-3">
+    <select class="form-control" (change)="updateClassName();getCategory()" [(ngModel)]="selectedClassId" #classId>
+      <option *ngFor="let cls of classes" value="{{cls.id}}">{{cls.className}}</option>
+    </select>
+  </div>
+
+  <div class="col-sm-3">
+    <select class="form-control" (change)="updateCatName()" [(ngModel)]="selectedCatId" #catId>
+      <option *ngFor="let cat of categories" value="{{cat.id}}">{{cat.name}}</option>
+    </select>
+  </div>
+
+  <div class="col-sm-1">
+    <button class="btn btn-info" (click)="filterFolders(classId.value, catId.value)"><i
+      class="fa fa-search-plus"></i> Search
+    </button>
+  </div>
+</div>
+<hr>
+
+<ng-container *ngFor="let root of rootFolders">
+  <div class="container-fluid" style="padding: 0; margin: 0 auto">
+    <div class="card">
+      <div class="card-header bg-{{root.allowed == true ? 'success': 'danger'}} text-white d-flex align-items-center">
+        <span style="font-weight: bold;">{{root.type}}</span>
+      </div>
+
+      <div class="card-body  border-left-2">
+        <h5 class="card-title text-secondary" style="cursor: pointer"
+            (click)="gotoSub(root.id, classId.value, catId.value, root.allowed)">{{root.name}}</h5>
+        <div class="d-flex align-items-center">
+          <span class="card-text mr-2"><b>Created By</b>: <span>{{root.teacher}}</span></span>
+          <span class="card-text mr-2"><b>Category</b>: <span>{{root.categoryName}}</span></span>
+          <span class="card-text mr-2"><b>Class</b>: <span>{{root.className}}</span></span>
+          <div class="ml-auto">
+<!--            <div class="form-check form-check-inline">-->
+<!--              <input class="form-check-input" type="checkbox" id="allowUpload" #permission disabled="disabled"-->
+<!--                     [checked]="root.allowed" (change)="updateUploadPermission(root.id, permission.checked)">-->
+<!--              <label class="form-check-label" for="allowUpload">Allow Upload</label>-->
+<!--            </div>-->
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" id="important" #importance disabled="disabled"
+                     [checked]="root.important" (change)="updateImportance(root.id, importance.checked)">
+              <label class="form-check-label" for="important">Important</label>
+            </div>
+          </div>
+        </div>
+        <span class="card-text mr-2"><b>Total Items</b>: <span
+          class="badge badge-pill badge-warning">{{root.numOfChild}}</span></span>
+      </div>
+
+    </div>
+  </div>
+</ng-container>
+
+
+<ng-template #file_create_modal let-modal style="max-width: 400px !important;">
+  <div class="modal-header">
+    <h4 class="modal-title">Create Folder</h4>
+    <button class="btn btn-xs rounded btn-outline-danger" aria-label="Close" (click)="modal.dismiss('Cross click')">X
+    </button>
+  </div>
+  <div class="modal-body" style="padding: 30px 25px">
+    <div class="row">
+      <div class="col-sm-6">
+        <label>Classes</label>
+        <select class="form-control" [(ngModel)]="selectedClassId" #classId>
+          <option *ngFor="let cls of classes" value="{{cls.id}}">{{cls.className}}</option>
+        </select>
+      </div>
+      <div class="col-sm-6">
+        <label>Category</label>
+        <select class="form-control" [(ngModel)]="selectedCatId" #catId>
+          <option *ngFor="let cat of categories" value="{{cat.id}}">{{cat.name}}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top: 10px">
+      <div class="col-sm-12">
+        <label>Name</label>
+        <input class="form-control" #name type="text" placeholder="Name...">
+      </div>
+    </div>
+    <br>
+    <div class="row justify-content-end">
+      <button class="btn btn-rounded btn-primary" (click)="createFolder(name.value)">
+        <i class="fa fa-plus-circle"></i> Create
+      </button>
+    </div>
+  </div>
+
+</ng-template>

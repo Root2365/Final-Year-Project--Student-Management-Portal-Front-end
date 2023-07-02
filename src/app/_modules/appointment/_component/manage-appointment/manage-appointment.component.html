@@ -1,0 +1,148 @@
+<div class="row">
+  <div class="input-group col-sm-3">
+    <input class="form-control" placeholder="yyyy-mm-dd"
+           name="fromDate" [displayMonths]="displayMonths"
+           [showWeekNumbers]="showWeekNumbers" [(ngModel)]="fromDate" ngbDatepicker
+           #from="ngbDatepicker">
+    <button class="btn btn-outline-primary btn-sm calendar" (click)="from.toggle()" type="button">
+      <i class="icon-Calendar-4"></i>
+    </button>
+  </div>
+
+  <div class="input-group col-sm-3">
+    <input class="form-control" placeholder="yyyy-mm-dd"
+           name="toDate" [displayMonths]="displayMonths" [navigation]="navigation"
+           [outsideDays]="outsideDays"
+           [showWeekNumbers]="showWeekNumbers" [(ngModel)]="toDate" ngbDatepicker
+           #to="ngbDatepicker">
+    <button class="btn btn-outline-primary btn-sm calendar" (click)="to.toggle()" type="button">
+      <i class="icon-Calendar-4"></i>
+    </button>
+  </div>
+
+  <div class="col-sm-3">
+    <button class="btn btn-rounded btn-outline-danger" (click)="filterData()"><i
+      class="fa fa-search-plus"></i> {{'search' | translate}}
+    </button>
+  </div>
+
+  <div class="col-sm-3 text-right" *ngIf="loggedInUserRole === 'ROLE_PARENT'">
+    <button class="btn rounded btn-success" (click)="open(create_modal)"><i
+      class="fa fa-plus-circle"></i> {{'create' | translate}}</button>
+  </div>
+</div>
+<div class="row" style="margin-top: 20px">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <ul class="timeline timeline-left" *ngIf="appointments.length > 0">
+          <li class="timeline-inverted timeline-item" *ngFor="let app of appointments">
+            <div class="timeline-badge success">
+              <span class="font-12">{{app.startTime | date: 'HH:mm'}} </span>
+            </div>
+            <div class="timeline-panel">
+              <div class="timeline-heading">
+                <h4 class="timeline-title text-base-color2">{{app.title}}
+                  <small style="font-size: 12px" class="badge badge-pill text-white {{getColor(app.status)}}">
+                    {{app.status}}
+                  </small>
+                </h4>
+                <select #status (change)="updateStatus(app.id, status.value)" *ngIf="loggedInUserRole == 'ROLE_TEACHER'"
+                        class="form-control" style="float: right;max-width: 150px">
+                  <option value="PENDING" [selected]="app.status === 'PENDING'">{{'pending' | translate}}</option>
+                  <option value="ACCEPTED" [selected]="app.status === 'ACCEPTED'">{{'accepted' | translate}}</option>
+                  <option value="CANCELLED" [selected]="app.status === 'CANCELLED'">{{'cancelled' | translate}}</option>
+                </select>
+                <p>
+                  <small class="text-muted">
+                    {{app.startTime | date: 'dd-MM-yyyy'}}  <i class="fa fa-clock mr-2"></i>
+                    <b>{{app.startTime | date: 'HH:mm'}} </b> -
+                    <b>{{app.endTime  | date: 'HH:mm'}} </b></small>
+                </p>
+              </div>
+              <div class="timeline-body">
+                <span class="mr-4" *ngIf="loggedInUserRole === 'ROLE_PARENT'">
+                  <b class="text-muted" style="font-size: 14px">Teacher</b>: {{app.teacher.name}}
+                </span>
+                <span class="mr-4" *ngIf="loggedInUserRole == 'ROLE_TEACHER'">
+                  <b class="text-muted" style="font-size: 14px">Parent</b>: {{app.parent.name}}
+                </span>
+
+                <span class="mr-4"><b class="text-muted"
+                                      style="font-size: 14px">Student</b>: {{app.students.name}}</span>
+                <span class="mr-4"><b class="text-muted"
+                                      style="font-size: 14px">Class</b>: {{app.classes.className}}</span>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Create Appointment Modal-->
+<ng-template #create_modal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">{{'create' | translate}} {{'appointment' | translate}}</h4>
+    <button class="btn btn-sm rounded btn-outline-danger" aria-label="Close" (click)="modal.dismiss('Cross click')">X
+    </button>
+  </div>
+  <div class="modal-body" style="padding: 6px 13px">
+    <form class="form-horizontal" [formGroup]="createData" (ngSubmit)="create()">
+      <div class="row">
+        <div class="col-sm-12">
+          <label class="text-muted">{{'title' | translate}}</label>
+          <input class="form-control" formControlName="title" name="title" type="text"
+                 placeholder="{{'title' | translate}}">
+        </div>
+
+        <div class="col-sm-6 mt-3">
+          <label class="text-muted">{{'child' | translate}}</label>
+          <select class="form-control" formControlName="sid" name="sid" #child_id
+                  (change)="getClasses( child_id.value)">
+            <option *ngFor="let ch of child" value="{{ch.id}}">{{ch.name}}</option>
+          </select>
+        </div>
+
+        <div class="col-sm-6  mt-3">
+          <label class="text-muted">{{'class' | translate}}</label>
+          <select class="form-control" formControlName="cid" name="cid" #class_id (change)="getTeacher(class_id.value)">
+            <option *ngFor="let cls of classes" value="{{cls.id}}">{{cls.className}}</option>
+          </select>
+        </div>
+
+        <input class="form-control hide" formControlName="tid" name="tid" *ngIf="teacher != null" type="text"
+               [(ngModel)]="teacher">
+
+        <div class="col-sm-12 mt-3">
+          <label class="text-muted">{{'date' | translate}}</label>
+          <div class="input-group">
+            <input class="form-control" placeholder="yyyy-mm-dd"
+                   name="fromDate" [displayMonths]="displayMonths"
+                   [showWeekNumbers]="showWeekNumbers" [(ngModel)]="fromCreate" ngbDatepicker
+                   #fromC="ngbDatepicker" [ngModelOptions]="{standalone: true}">
+            <button class="btn btn-outline-primary btn-sm calendar" (click)="fromC.toggle()" type="button">
+              <i class="icon-Calendar-4"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="col-sm-6 mt-3">
+          <label class="text-muted">{{'start_time' | translate}}</label>
+          <ngb-timepicker [(ngModel)]="startTime" [ngModelOptions]="{standalone: true}"></ngb-timepicker>
+        </div>
+
+        <div class="col-sm-6 mt-3">
+          <label class="text-muted">{{'end_time' | translate}}</label>
+          <ngb-timepicker [(ngModel)]="endTime" [ngModelOptions]="{standalone: true}"></ngb-timepicker>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="padding: 8px">
+        <button type="submit" class="btn btn-outline-warning">{{'request_appointment' | translate}}</button>
+      </div>
+    </form>
+  </div>
+</ng-template>
+<!--Create Appointment Modal-->

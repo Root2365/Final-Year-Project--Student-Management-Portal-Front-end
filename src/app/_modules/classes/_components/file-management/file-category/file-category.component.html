@@ -1,0 +1,136 @@
+<ngx-spinner fullScreen="false">
+  <p style="font-size: 20px; color: white">{{'processing' | translate}}</p>
+</ngx-spinner>
+<div class="row">
+  <div class="col-sm-12 text-right">
+    <button class="btn btn-rounded btn-primary" (click)="open(create_modal)">
+      <i class="fa fa-plus-circle"></i> Create Category
+    </button>
+  </div>
+</div>
+<hr>
+<div class="row">
+  <div class="col-sm-6 col-lg-3 col-md-4 m-t-20" *ngFor="let data of dataList">
+    <div class="shadow-lg c_border_radius c_box_items card-body" style="padding:25px 10px 1px 10px !important;">
+      <div class="row">
+        <div class="col-12 text-center">
+          <h3 class="font-weight-bold text-secondary"
+              style="max-width: 100%; overflow: hidden;text-overflow: ellipsis;">{{data.name}}</h3>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-9 ">
+
+        </div>
+        <div class="col-sm-3 text-right">
+          <span class=" font-weight-bold text-danger" style="margin-right:10px;cursor: pointer"
+                (click)="confirmDelete(confirm_modal, data.name,data.id)">
+            <i class="fa fa-trash"></i>
+          </span>
+          <span class="font-weight-bold text-primary" style="cursor: pointer"
+                (click)="getById(data.id);open(update_modal)">
+            <i class="fa fa-edit"></i>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Create Question Set Modal-->
+<ng-template #create_modal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Create</h4>
+    <button class="btn btn-sm rounded btn-outline-danger" aria-label="Close" (click)="modal.dismiss('Cross click')">X
+    </button>
+  </div>
+  <div class="modal-body" style="padding: 6px 13px">
+    <div class="form-horizontal m-t-20">
+      <div>
+        <div class="input-group">
+          <input type="text" class="form-control form-control-lg" name="name"  #catName placeholder="Category Name...">
+        </div>
+        <br>
+        <ng-multiselect-dropdown
+          [placeholder]="'Select a Class'"
+          [settings]="dropdownSettings"
+          [data]="dropdownList"
+          [(ngModel)]="selectedItems"
+          (onSelect)="onItemSelect($event)"
+          (onSelectAll)="onSelectAll($event)"
+          (onDeSelect)="onDeSelect($event)"
+          (onDeSelectAll)="onDeSelectAll()"
+        >
+        </ng-multiselect-dropdown>
+        <br>
+      </div>
+
+      <div class="modal-footer" style="padding: 8px">
+        <button type="submit" class="btn btn-warning" (click)="create(catName.value)">Create</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<!--Create Question Set Modal-->
+
+<!--Update Question Set Modal-->
+<ng-template #update_modal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-edit-content">Update Category</h4>
+    <button type="button" class="btn btn-sm rounded btn-outline-danger" aria-label="Close"
+            (click)="modal.dismiss('Cross click')">X
+    </button>
+  </div>
+  <div class="modal-body" style="padding: 6px 13px">
+    <div>
+      <div class="form-horizontal m-t-20">
+        <div class="">
+          <div class="input-group">
+            <input class="form-control form-control-lg" value="{{rcById.name}}" #catNameUpdate placeholder="Category Name...">
+          </div>
+          <br>
+          <ng-multiselect-dropdown
+            [placeholder]="'Select a Class'"
+            [settings]="dropdownSettings"
+            [data]="dropdownList"
+            [(ngModel)]="selectedItems"
+            (onSelect)="onItemSelect($event)"
+            (onSelectAll)="onSelectAll($event)"
+            (onDeSelect)="onDeSelect($event)"
+            (onDeSelectAll)="onDeSelectAll()"
+          >
+          </ng-multiselect-dropdown>
+          <br>
+        </div>
+        <div class="modal-footer" style="padding: 8px">
+          <button type="submit" class="btn btn-warning" (click)="update(rcById.id, catNameUpdate.value)">Update</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<!--Update Question Set Modal-->
+
+<!-- Delete Question Set Modal-->
+<ng-template #confirm_modal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">{{'delete_confirm' | translate}}</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')">X</button>
+  </div>
+  <div class="modal-body">
+    <div>
+      <h5>
+        It will deletes all files and folders in that category. Confirm Delete <span class="text-primary">{{rcName}}</span> Category?
+      </h5>
+    </div>
+    <br>
+    <alert fade="true"></alert>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="modal.dismiss('Cancel Clicked')">Cancel</button>
+    <button type="button" class="btn btn-outline-danger" (click)="delete(rcId)">Delete</button>
+  </div>
+</ng-template>
+<!-- Delete Question Set Modal-->
+
+

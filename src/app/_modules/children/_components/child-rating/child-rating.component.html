@@ -1,0 +1,29 @@
+<ngx-spinner fullScreen="false">
+  <p style="font-size: 20px; color: white">{{'processing' | translate}}</p>
+</ngx-spinner>
+
+<div class="row" style="margin-top: 2rem">
+  <div class="col-sm-3">
+    <select class="form-control" #class_id (change)="filterRating(class_id.value, child_id.value)">
+      <option *ngFor="let cls of classes" [selected]="cls.id == selectedClassId"
+              value="{{cls.id}}">{{cls.className}}</option>
+    </select>
+  </div>
+
+  <div class="col-sm-3">
+    <select class="form-control" #child_id (change)="filterRating(class_id.value, child_id.value)">
+      <option *ngFor="let ch of child" [selected]="ch.id == selectedChildId" value="{{ch.id}}">{{ch.name}}</option>
+    </select>
+  </div>
+</div>
+<br>
+
+<div class="row" style="margin-top: 2rem;">
+  <div class="col-sm-6 col-md-4 col-lg-3" style="padding: 0 30px" *ngFor="let rating of childRatings">
+    <div class="card shadow text-center" style="padding: 20px;border-radius: 20px">
+      <p style="font-size: 20px" class="text-muted text-monospace">{{rating.ratingCategory.name}}</p>
+      <i class="ti-face-smile text-success" *ngIf="rating.positive == 1" style="font-size: 50px"></i>
+      <i class="ti-face-sad text-danger" *ngIf="rating.negative == 1" style="font-size: 50px"></i>
+    </div>
+  </div>
+</div>

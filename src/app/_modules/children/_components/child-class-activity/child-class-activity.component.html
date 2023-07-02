@@ -1,0 +1,106 @@
+<div class="row m-t-40">
+  <div class="col-sm-2">
+    <select class="form-control" #child_id (change)="getClasses(child_id.value)">
+      <option *ngFor="let ch of child" [selected]="ch.id == selectedChildId" value="{{ch.id}}">{{ch.name}}</option>
+    </select>
+  </div>
+
+  <div class="col-sm-3">
+    <select class="form-control" #classId>
+      <option *ngFor="let cls of classes" value="{{cls.id}}">{{cls.className}}</option>
+    </select>
+  </div>
+
+  <div class="input-group col-sm-2">
+    <input class="form-control" placeholder="yyyy-mm-dd"
+           name="fromDate" [displayMonths]="displayMonths"
+           [showWeekNumbers]="showWeekNumbers" [(ngModel)]="fromDate" ngbDatepicker
+           #from="ngbDatepicker">
+    <button class="btn btn-outline-primary btn-sm calendar" (click)="from.toggle()" type="button">
+      <i class="icon-Calendar-4"></i>
+    </button>
+  </div>
+
+  <div class="input-group col-sm-2">
+    <input class="form-control" placeholder="yyyy-mm-dd"
+           name="toDate" [displayMonths]="displayMonths" [navigation]="navigation"
+           [outsideDays]="outsideDays"
+           [showWeekNumbers]="showWeekNumbers" [(ngModel)]="toDate" ngbDatepicker
+           #to="ngbDatepicker">
+    <button class="btn btn-outline-primary btn-sm calendar" (click)="to.toggle()" type="button">
+      <i class="icon-Calendar-4"></i>
+    </button>
+  </div>
+
+  <div class="col-sm-1">
+    <button class="btn btn-rounded btn-outline-danger" (click)="filterData(classId.value)"><i
+      class="fa fa-search-plus"></i> {{'search' | translate}}
+    </button>
+  </div>
+</div>
+
+<div class="row" style="margin-top: 20px">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <ul class="timeline timeline-left">
+          <li class="timeline-inverted timeline-item" *ngFor="let act of activities">
+            <div class="timeline-badge success">
+              <span class="font-12">{{act.activityDate | date: 'HH:mm'}}</span>
+            </div>
+            <div class="timeline-panel">
+              <div class="timeline-heading">
+                <h4 class="timeline-title">{{act.title}}</h4>
+                <p>
+                  <small class="text-muted">
+                    <i class="fa fa-clock-o"></i> {{act.activityDate | date: 'dd-MM-yyyy HH:mm'}}</small>
+                </p>
+              </div>
+              <div class="timeline-body">
+                <img *ngIf="act.filePath != null" class="img-fluid" src="{{'data:image/jpg;base64,' + act.filePath}}"
+                     alt="img" style="max-width: 500px">
+                <p>{{act.description}}</p>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #create_modal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">{{'create' | translate}} {{'activity' | translate}}</h4>
+    <button class="btn btn-sm rounded btn-outline-danger" aria-label="Close" (click)="modal.dismiss('Cross click')">X
+    </button>
+  </div>
+  <div class="modal-body" style="padding: 6px 13px">
+    <form class="form-horizontal" [formGroup]="createData" (ngSubmit)="create(classId.value)">
+      <div class="row">
+        <div class="col-sm-12 form-group">
+          <label class="text-muted">{{'title' | translate}}</label>
+          <input class="form-control" formControlName="title" name="title" type="text"
+                 placeholder="{{'title' | translate}}">
+        </div>
+
+        <div class="col-sm-12 form-group">
+          <label class="text-muted">{{'description' | translate}}</label>
+          <textarea class="form-control" formControlName="description" name="description"
+                    placeholder="{{'description' | translate}}">
+          </textarea>
+        </div>
+
+        <div class="col-sm-12 form-group">
+          <label class="text-muted">{{'image' | translate}}</label>
+          <input class="form-control" formControlName="filePath" #image name="filePath" type="file"
+                 placeholder="{{'image' | translate}}" (change)="onUploadChange(image.files[0])">
+        </div>
+      </div>
+
+      <div class="modal-footer" style="padding: 8px">
+        <button type="submit" class="btn btn-outline-warning">{{'submit' | translate}}</button>
+      </div>
+    </form>
+  </div>
+</ng-template>

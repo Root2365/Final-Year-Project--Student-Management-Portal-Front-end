@@ -1,0 +1,44 @@
+<ngx-spinner fullScreen="false">
+  <p style="font-size: 20px; color: white">{{'please_wait' | translate}} ...</p>
+</ngx-spinner>
+
+<div class="auth-wrapper d-flex no-block justify-content-center align-items-center"
+     style="background:url(../../../../assets/images/big/auth-bg.jpg) no-repeat center center;">
+  <div class="auth-box" style="max-width: 500px !important;">
+    <alert></alert>
+    <div id="recoverform" class="d-block">
+      <div class="logo">
+        <span class="db"><img src="../../../../assets/images/logo.png" style="max-width: 40%" alt="logo"/></span>
+        <h2 class="font-medium m-b-20">{{'update' | translate}} {{'password' | translate}}</h2>
+      </div>
+      <div class="row m-t-20">
+        <!-- Form -->
+        <form class="col-12">
+          <!-- email -->
+          <div class="form-group row">
+            <div class="col-12">
+              <input class="form-control form-control-lg" type="password" required=""
+                     placeholder="{{'new_password' | translate}}" #new_pass>
+              <br>
+              <input class="form-control form-control-lg" type="password" required=""
+                     placeholder="{{'confirm_password' | translate}}" #confirm_pass>
+            </div>
+          </div>
+          <!-- pwd -->
+          <div class="row m-t-20">
+            <div class="col-12">
+              <button (click)="updatePassword(new_pass.value,confirm_pass.value)"
+                      class="btn btn-block btn-lg btn-primary btn-rounded" type="submit"
+                      name="action">{{'update' | translate}} {{'password' | translate}}
+              </button>
+            </div>
+            <br>
+            <div class="col-sm-12 text-center m-t-40">
+              <a href="#/authentication/login" class="text-info m-l-5 "><b>Goto Login</b></a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

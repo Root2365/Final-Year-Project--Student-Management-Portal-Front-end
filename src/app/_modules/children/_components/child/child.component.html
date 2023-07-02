@@ -1,0 +1,169 @@
+<ngx-spinner fullScreen="false">
+  <p style="font-size: 20px; color: white">{{'processing' | translate}}</p>
+</ngx-spinner>
+<!--Create Students Button-->
+<div class="row">
+  <div class="col-sm-12 text-left" style="cursor: pointer;">
+    <button class="btn btn-success btn-rounded shadow" (click)="open(create_modal)"
+            style="float: right; margin-left: 20px">{{'create_child' | translate}}</button>
+    <button class="btn btn-danger btn-rounded shadow" (click)="open(add_to_modal)"
+            style="float: right">{{'add_child_to_class' | translate}}</button>
+  </div>
+</div>
+<!--Create Students Button-->
+
+<div class="row" style="margin-top: 4rem ">
+  <div class="col-sm-2 col-md-4 col-lg-3" style="cursor: pointer" *ngFor="let student of dataList">
+    <div class="card shadow"
+         style="width: 18rem;border:0;margin-top: -3rem;max-width: 220px;height: 250px;border-radius: 10px">
+      <img *ngIf="student.avatar == null" style="max-width: 60%" src="assets/images/no_image_profile.png"
+           class="card-img-top" alt="...">
+      <img *ngIf="student.avatar != null" style="max-width: 75% !important; margin: 0 auto"
+           src="{{'data:image/jpg;base64,' + student.avatar}}" class="card-img-top"
+           alt="...">
+      <div class="card-body text-center" style="padding: 0">
+        <h5 class="card-title">{{student.name}}</h5>
+        <button *ngIf="!student.sick" (click)="mark(student.id, true)" class="btn btn-sm btn-outline-success mr-2"><i
+          class="ti-face-smile"></i></button>
+        <button *ngIf="student.sick" (click)="mark(student.id, false)" class="btn btn-sm btn-outline-danger mr-2"><i
+          class="ti-face-sad"></i></button>
+        <!--<button class="btn btn-xs btn-outline-primary mr-2"><i class="fa fa-edit"></i></button>
+        <button class="btn btn-xs btn-outline-danger mr-2"><i class="fa fa-trash-alt"></i></button>-->
+        <button class="btn btn-sm btn-outline-info mr-2" (click)="gotoDetails(student.id)"><i class="fa fa-eye"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Create Students Modal-->
+<ng-template #create_modal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">{{'create_child' | translate}}</h4>
+    <button class="btn btn-sm rounded btn-outline-danger" aria-label="Close" (click)="modal.dismiss('Cross click')">X
+    </button>
+  </div>
+  <div class="modal-body" style="padding: 6px 13px">
+    <form class="form-horizontal m-t-20" [formGroup]="createData" (ngSubmit)="create()">
+      <div>
+        <div class="form-group">
+          <input type="text" formControlName="name" class="form-control form-control-lg" name="name"
+                 placeholder="{{'child_name' | translate}}"
+                 [ngClass]="{ 'is-invalid': submitted && fields.name.errors }">
+          <div *ngIf="submitted && fields.name.errors" class="invalid-feedback">
+            <div *ngIf="fields.name.errors.required">{{'req_child_name' | translate}}</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <input type="file" class="form-control" #avatar formControlName="avatar" name="avatar"
+                 (change)="onUploadChange(avatar.files[0])">
+        </div>
+        <br>
+        <div class="form-group">
+          <div class="col-sm-10">
+            <b>{{'gender' | translate}}: </b>
+            <label class="radio-inline" style="margin-right: 20px">
+              <input value="male" type="radio" formControlName="gender" name="gender"> {{'male' | translate}}
+            </label>
+            <label class="radio-inline">
+              <input value="female" type="radio" formControlName="gender" name="gender"> {{'female' | translate}}
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="padding: 8px">
+        <button type="submit" class="btn btn-warning">{{'create_child' | translate}}</button>
+      </div>
+    </form>
+  </div>
+</ng-template>
+<!--Create Students Modal-->
+
+<!--Add Students Modal-->
+<ng-template #add_to_modal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">{{'add_child_to_class' | translate}}</h4>
+    <button class="btn btn-sm rounded btn-outline-danger" aria-label="Close" (click)="modal.dismiss('Cross click')">X
+    </button>
+  </div>
+  <div class="modal-body" style="padding: 6px 13px">
+    <form class="form-horizontal m-t-20" [formGroup]="addToClassData" (ngSubmit)="addToClass()">
+      <div>
+        <div class="form-group">
+          <select class="form-control" formControlName="studentId" name="studentId" required>
+            <option value="0" selected disabled>{{'select_child' | translate}}</option>
+            <option *ngFor="let child of dataList" value="{{child.id}}">{{child.name}}</option>
+          </select>
+        </div>
+        <br>
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="{{'class' | translate}} {{'code' | translate}}"
+                 formControlName="classCode" name="classCode">
+        </div>
+      </div>
+
+      <div class="modal-footer" style="padding: 8px">
+        <button type="submit" class="btn btn-warning">{{'add_child_to_class' | translate}}</button>
+      </div>
+    </form>
+  </div>
+</ng-template>
+<!--Add Students Modal-->
+
+<!--Update Students Modal-->
+<ng-template #update_modal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-edit-content">{{'update_rc' | translate}}</h4>
+    <button type="button" class="btn btn-sm rounded btn-outline-danger" aria-label="Close"
+            (click)="modal.dismiss('Cross click')">X
+    </button>
+  </div>
+  <div class="modal-body" style="padding: 6px 13px">
+    <div>
+      <form class="form-horizontal m-t-20" [formGroup]="updateData"
+            (ngSubmit)="update(rcById.id)">
+        <div class="">
+          <div class="input-group">
+            <input formControlName="name" class="form-control form-control-lg" name="name"
+                   placeholder="{{'rc_name'}}"
+                   [ngModel]="rcById.name" [ngClass]="{ 'is-invalid': submitted && fields.name.errors }">
+            <div *ngIf="submitted && fields.name.errors" class="invalid-feedback">
+              <div *ngIf="fields.name.errors.required">{{'req_rc_name' | translate}}</div>
+            </div>
+          </div>
+          <br>
+        </div>
+        <div class="modal-footer" style="padding: 8px">
+          <button type="submit" class="btn btn-warning">{{'update_rc' | translate}}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>
+<!--Update Students Modal-->
+
+<!-- Delete Students Modal-->
+<ng-template #confirm_modal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">{{'delete_confirm' | translate}}</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')">X</button>
+  </div>
+  <div class="modal-body">
+    <div>
+      <h5>
+        {{'delete_confirm' | translate}} "<span class="text-primary">{{rcName}}</span>" {{'class' | translate}}
+        ?
+      </h5>
+    </div>
+    <br>
+    <alert fade="true"></alert>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="modal.dismiss('Cancel Clicked')">Cancel</button>
+    <button type="button" class="btn btn-outline-danger" (click)="delete(rcId)">{{'delete' | translate}}</button>
+  </div>
+</ng-template>
+<!-- Delete Students Modal-->
+
+

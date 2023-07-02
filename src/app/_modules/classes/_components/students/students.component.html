@@ -1,0 +1,102 @@
+<ngx-spinner fullScreen="false">
+  <p style="font-size: 20px; color: white">{{'processing' | translate}}</p>
+</ngx-spinner>
+<div class="row" style="margin-top: 2rem">
+  <div class="col-sm-3">
+    <select class="form-control" #class_id (change)="gotoDetails(class_id.value)">
+      <option *ngFor="let cls of classes" value="{{cls.id}}" [selected]="classId==cls.id">{{cls.className}}</option>
+    </select>
+  </div>
+
+  <div class="col-sm-2">
+    <button class="btn btn-outline-danger btn-rounded"
+            (click)="getSickChild()">{{'show_all_sick_children' | translate}}</button>
+  </div>
+  <div class="col-sm-2 ml-2">
+    <button class="btn btn-outline-success btn-rounded"
+            (click)="getStudentByClass()">{{'show_all_students' | translate}}</button>
+  </div>
+</div>
+<br>
+<div class="row" style="margin-top: 2rem">
+  <ng-container *ngIf="studentList">
+    <div class="col-sm-3 col-md-4 col-lg-3" *ngFor="let student of studentList">
+      <div class="card" style="width: 18rem;border:0;margin-top: -3rem">
+      <span *ngIf="student.sick" class="badge badge-pill bg-danger text-white font-weight-bold"
+            style="position: absolute;top: 20px;right: 65px;margin: 0 auto;font-size: 13px">
+        {{'im_sick' | translate}}
+      </span>
+        <img *ngIf="student.avatar == null" src="assets/images/no_image_profile.png" class="card-img-top" alt="...">
+        <img *ngIf="student.avatar != null" src="{{'data:image/jpg;base64,' + student.avatar}}" class="card-img-top"
+             alt="...">
+        <div class="card-body ">
+          <h5 class="card-title">{{student.name}} <a href="javascript:void(0)" (click)="removeStudent(student.id)">
+            <span class="text-danger fa fa-trash-alt"></span></a></h5>
+          <div class="d-flex justify-content-center">
+            <button class="rating_btn btn btn-sm mr-2" data-toggle="tooltip" data-placement="right" title="Ratings"
+                    (click)="setStudentId(student.id);getStudentRatings(student.id, rating_modal)"><i
+              class="fas fa-star"></i>
+            </button>
+            <button class="attendance_btn btn btn-sm text-center" data-toggle="tooltip" data-placement="right"
+                    title="Attendance"
+                    (click)="setStudentId(student.id);getStudentAttendance(student.id, attendance_modal)"><i
+              class="fas fa-calendar-check"></i>
+            </button>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </ng-container>
+  <div *ngIf="!studentList" style="margin: 0 auto">
+    <hr>
+    <h4 class="text-muted">{{'no_student_sick' | translate}}</h4>
+    <hr>
+  </div>
+</div>
+
+<ng-template #rating_modal let-modal style="max-width: 400px !important;">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Give Ratings</h4>
+    <button class="btn btn-xs rounded btn-outline-danger" aria-label="Close" (click)="modal.dismiss('Cross click')">X
+    </button>
+  </div>
+  <div class="modal-body" style="padding: 6px 13px">
+    <div class="row" *ngFor="let rc of ratingCategories"
+         style="text-align: center;max-width: 300px; margin: 10px auto;">
+      <div class="col-sm-1">
+        <button class="btn btn-danger {{disabledNeg(rc.id)}}" (click)="negative(rc.id)"><i
+          class="fa fa-minus-circle"></i></button>
+      </div>
+      <div class="col-sm-9" style="top: 7px;left: 20px"><span>{{rc.name}}</span></div>
+      <div class="col-sm-1">
+        <button class="btn btn-success {{disabledPos(rc.id)}}" (click)="positive(rc.id)"><i
+          class="fa fa-plus-circle"></i></button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #attendance_modal let-modal style="max-width: 400px !important;">
+  <div class="modal-header">
+    <h4 class="modal-title">Attendance</h4>
+    <button class="btn btn-xs rounded btn-outline-danger" aria-label="Close" (click)="modal.dismiss('Cross click')">X
+    </button>
+  </div>
+  <div class="modal-body" style="padding: 30px 25px">
+    <div class="d-flex justify-content-center">
+      <div class="input-group mr-2">
+        <input class="form-control" placeholder="yyyy-mm-dd"
+               name="fromDate" [displayMonths]="displayMonths"
+               [showWeekNumbers]="showWeekNumbers" [(ngModel)]="attendanceDate" ngbDatepicker
+               #from="ngbDatepicker">
+        <button class="btn btn-outline-primary btn-sm calendar" (click)="from.toggle()" type="button">
+          <i class="icon-Calendar-4"></i>
+        </button>
+      </div>
+      <button class=" btn btn-sm btn-outline-danger mr-2" (click)="markAttendance(class_id.value, false)">Absent</button>
+      <button class=" btn btn-sm btn-outline-success" (click)="markAttendance(class_id.value, true)">Present</button>
+    </div>
+  </div>
+</ng-template>

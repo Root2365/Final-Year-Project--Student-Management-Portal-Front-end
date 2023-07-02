@@ -1,0 +1,136 @@
+<ngx-spinner fullScreen="false">
+  <p style="font-size: 20px; color: white">{{'processing' | translate}}</p>
+</ngx-spinner>
+
+<div class="row">
+  <div class="col-sm-6 col-lg-3 col-md-4 m-t-20" *ngFor="let cls of classes">
+    <div class="bg-info shadow-lg c_border_radius c_box_items card-body"
+         style="padding:25px 10px 1px 10px !important;">
+      <div class="row">
+        <div class="col-12 text-center">
+          <h3 class="font-weight-bold text-white" (click)="gotoDetails(cls.id)"
+              style="cursor:pointer;max-width: 100%; overflow: hidden;text-overflow: ellipsis;text-decoration: underline">{{cls.className}}</h3>
+          <h5 class="text-dark">Total Student: <span>{{ cls.students == null ? 0 : cls.students.length  }}</span></h5>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-9 ">
+          <p class="text-white ">{{'code' | translate}} :
+            <span class="font-weight-bold">{{cls.classCode}}</span>
+          </p>
+        </div>
+        <div class="col-sm-3 text-right">
+          <span class=" font-weight-bold text-white" style="margin-right: 5px"
+                (click)="confirmDelete(confirmModal, cls.className,cls.id)">
+            <i class="fa fa-trash"></i>
+          </span>
+          <span class="font-weight-bold text-white"
+                (click)="getClassById(cls.id);open(updateContent)">
+            <i class="fa fa-edit"></i>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Create Question Set Button-->
+<div class="row">
+  <div class="col-sm-3 m-t-20" (click)="open(create_class)" style="cursor: pointer">
+    <div class="bg-danger shadow c_border_radius c_box_items card-body">
+      <div class="row">
+        <div class="col-12 text-center">
+          <h4 class="font-weight-bold text-white ">{{'create_class' | translate}}</h4>
+          <h2 class="font-weight-bold text-white icon-Add"></h2>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--Create Question Set Button-->
+
+<!--Create Question Set Modal-->
+<ng-template #create_class let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">{{'create_class' | translate}}</h4>
+    <button class="btn btn-sm rounded btn-outline-danger" aria-label="Close" (click)="modal.dismiss('Cross click')">X
+    </button>
+  </div>
+  <div class="modal-body" style="padding: 6px 13px">
+    <form class="form-horizontal m-t-20" [formGroup]="classData" (ngSubmit)="createClass()">
+      <div>
+        <div class="input-group">
+          <input type="text" formControlName="name" class="form-control form-control-lg" name="name"
+                 placeholder="{{'class_name' | translate}}"
+                 [ngClass]="{ 'is-invalid': submitted && fields.name.errors }">
+          <div *ngIf="submitted && fields.name.errors" class="invalid-feedback">
+            <div *ngIf="fields.name.errors.required">{{'req_class_name' | translate}}</div>
+          </div>
+        </div>
+        <br>
+      </div>
+
+      <div class="modal-footer" style="padding: 8px">
+        <button type="submit" class="btn btn-warning">{{'create_class' | translate}}</button>
+      </div>
+    </form>
+  </div>
+</ng-template>
+<!--Create Question Set Modal-->
+
+<!--Update Question Set Modal-->
+<ng-template #updateContent let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-edit-content">{{'update_class' | translate}}</h4>
+    <button type="button" class="btn btn-sm rounded btn-outline-danger" aria-label="Close"
+            (click)="modal.dismiss('Cross click')">X
+    </button>
+  </div>
+  <div class="modal-body" style="padding: 6px 13px">
+    <div>
+      <form class="form-horizontal m-t-20" [formGroup]="classDataUpdate"
+            (ngSubmit)="updateClass(classById.id)">
+        <div class="">
+          <div class="input-group">
+            <input formControlName="name" class="form-control form-control-lg" name="name"
+                   placeholder="Question Set Name"
+                   [ngModel]="classById.className" [ngClass]="{ 'is-invalid': submitted && fields.name.errors }">
+            <div *ngIf="submitted && fields.name.errors" class="invalid-feedback">
+              <div *ngIf="fields.name.errors.required">{{'req_class_name' | translate}}</div>
+            </div>
+          </div>
+          <br>
+        </div>
+        <div class="modal-footer" style="padding: 8px">
+          <button type="submit" class="btn btn-warning">{{'update_class' | translate}}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>
+<!--Update Question Set Modal-->
+
+<!-- Delete Question Set Modal-->
+<ng-template #confirmModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">{{'delete_confirm' | translate}}</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')">X</button>
+  </div>
+  <div class="modal-body">
+    <div>
+      <h5>
+        {{'delete_confirm' | translate}} "<span class="text-primary">{{className}}</span>" {{'class' | translate}}
+        ?
+      </h5>
+    </div>
+    <br>
+    <alert fade="true"></alert>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="modal.dismiss('Cancel Clicked')">Cancel</button>
+    <button type="button" class="btn btn-outline-danger" (click)="deleteClass(classId)">Delete</button>
+  </div>
+</ng-template>
+<!-- Delete Question Set Modal-->
+
+

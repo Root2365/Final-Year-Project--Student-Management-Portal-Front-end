@@ -1,0 +1,49 @@
+.row {
+  border: 0;
+}
+
+img {
+  width: 50%;
+  border-radius: 50%;
+  margin: 0 auto;
+  box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+}
+
+.card {
+  padding: 20px;
+  border-radius: 2em;
+  text-align: center;
+  /*box-shadow: 0 5px 10px rgba(0, 0, 0, .2);*/
+}
+
+.rating_btn {
+  background-color: #FAAF3C;
+  color: #ffffff;
+  padding: .5em 1em;
+}
+
+.rating_btn:hover {
+  background-color: rgb(255, 255, 255);
+  color: #150808;
+  box-shadow: 0 0 15px #FAAF3C;
+}
+
+.attendance_btn {
+  background-color: #8BC34A;
+  color: #fff;
+  padding: .5em 1em;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.attendance_btn:hover {
+  background-color: #fff;
+  color: #8BC34A;
+  box-shadow: 0 0 15px #8BC34A;
+  transform: scale(1.1);
+  outline: none;
+}
+
+.attendance_btn:focus {
+  outline: none;
+}

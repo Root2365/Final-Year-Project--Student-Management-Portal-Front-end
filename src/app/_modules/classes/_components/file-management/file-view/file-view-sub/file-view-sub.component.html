@@ -1,0 +1,125 @@
+<ngx-spinner fullScreen="false">
+  <p style="font-size: 20px; color: white">Processing...</p>
+</ngx-spinner>
+
+<!--<div class="row justify-content-end">-->
+<!--  <button class="btn btn-rounded btn-primary" *ngIf="isAllowed === 'true'"-->
+<!--          (click)="open(file_create_modal)">-->
+<!--    <i class="fa fa-plus-circle"></i> Upload Files-->
+<!--  </button>-->
+
+<!--  <button class="btn btn-danger" *ngIf="isAllowed === 'false'">-->
+<!--    <i class="fa fa-exclamation-circle"></i> You dont have permission to upload here!!!-->
+<!--  </button>-->
+<!--</div>-->
+<hr>
+<p (click)="gotoBack()" class="text-secondary" style="font-weight: bold;cursor: pointer">
+  <i class="fa fa-arrow-alt-circle-left"></i> {{goBack}}
+</p>
+<div class="row ">
+  <ng-container *ngFor="let files of fileFolders">
+    <div *ngIf="files.type === 'FOLDER'" class="container-fluid" style="padding: 0; margin: 0 auto;">
+      <div class="card">
+        <div
+          class="card-header bg-{{files.allowed == true ? 'success': 'danger'}} text-white d-flex align-items-center">
+          <span>{{files.type}}</span>
+        </div>
+
+        <div class="card-body  border-left-2">
+          <h5 class="card-title text-secondary" style="cursor: pointer"
+              (click)="gotoSub(files.id, files.allowed)">{{files.name}}</h5>
+          <div class="d-flex align-items-center">
+            <span
+              class="card-text mr-2"><b>Created By</b>: <span>{{files.teacher === null ? files.studentName : files.teacher}}</span></span>
+            <span class="card-text mr-2"><b>Category</b>: <span>{{selectedCategory}}</span></span>
+            <span class="card-text mr-2"><b>Class</b>: <span>{{selectedClass}}</span></span>
+            <div class="ml-auto">
+<!--              <div class="form-check form-check-inline">-->
+<!--                <input class="form-check-input" type="checkbox" id="allowUpload" #permission disabled="disabled"-->
+<!--                       [checked]="files.allowed">-->
+<!--                <label class="form-check-label" for="allowUpload">Allow Upload</label>-->
+<!--              </div>-->
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="important" #importance disabled="disabled"
+                       [checked]="files.important">
+                <label class="form-check-label" for="important">Important</label>
+              </div>
+            </div>
+          </div>
+          <span class="card-text mr-2"><b>Total Items</b>: <span
+            class="badge badge-pill badge-warning">{{files.children.length}}</span></span>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="files.type === 'FILE'" class="container-fluid" style="padding: 0; margin: 0 auto">
+      <div class="card">
+        <div class="card-header bg-secondary text-white d-flex align-items-center">
+          <span>File</span>
+        </div>
+
+        <div class="card-body  border-left-2">
+          <h5 class="card-title text-success">{{files.name}}</h5>
+          <div class="d-flex align-items-center">
+            <span class="card-text mr-2"><b>Created By</b>: <span>{{files.teacher === null ? files.studentName : files.teacher}}</span></span>
+            <span class="card-text mr-2"><b>Category</b>: <span>{{selectedCategory}}</span></span>
+            <span class="card-text mr-2"><b>Class</b>: <span>{{selectedClass}}</span></span>
+            <div class="ml-auto">
+              <div class="form-check form-check-inline">
+                <button class="btn btn-link" (click)="downloadFile(files.id)">Download</button>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" #importance disabled="disabled"
+                       [checked]="files.important">
+                <label class="form-check-label" for="important">Important</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+</div>
+
+
+<ng-template #file_create_modal let-modal style="max-width: 400px !important;">
+  <div class="modal-header">
+    <h4 class="modal-title">Create Folder</h4>
+    <button class="btn btn-xs rounded btn-outline-danger" aria-label="Close" (click)="modal.dismiss('Cross click')">X
+    </button>
+  </div>
+  <div class="modal-body" style="padding: 30px 25px">
+    <div class="row" style="margin-top: 10px">
+      <div class="col-sm-12">
+        <label>Name</label>
+        <input class="form-control" #name type="text" placeholder="Name...">
+      </div>
+    </div>
+
+    <div class="row" style="margin-top: 10px">
+      <div class="col-sm-6 d-flex align-items-center">
+        <label>Files</label>
+        <input class="form-control" type="radio" name="type" #fileRadio value="FILES" (click)="showUpload(true)">
+      </div>
+<!--      <div class="col-sm-6 d-flex align-items-center">-->
+<!--        <label>Folders</label>-->
+<!--        <input class="form-control" type="radio" name="type" #folderRadio value="FOLDERS" (click)="showUpload(false)">-->
+<!--      </div>-->
+    </div>
+
+    <div class="row" style="margin-top: 10px" *ngIf="showFileInput">
+      <div class="col-sm-12">
+        <input class="form-control" (change)="onFileSelected($event)" type="file">Files
+      </div>
+    </div>
+    <br>
+    <div class="row justify-content-end">
+      <button class="btn btn-rounded btn-primary"
+              (click)="createFolder(name.value, fileRadio.checked, false)">
+        <i class="fa fa-plus-circle"></i> Upload
+      </button>
+    </div>
+  </div>
+
+</ng-template>

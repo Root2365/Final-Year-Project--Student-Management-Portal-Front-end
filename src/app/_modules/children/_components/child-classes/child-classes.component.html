@@ -1,0 +1,26 @@
+<ngx-spinner fullScreen="false">
+  <p style="font-size: 20px; color: white">{{'processing' | translate}}</p>
+</ngx-spinner>
+
+
+<div class="row">
+  <div class="col-sm-6 col-lg-3 col-md-4 m-t-20" *ngFor="let cls of classes">
+    <div class="bg-info shadow-lg c_border_radius c_box_items card-body"  (click)="gotoDetails(cls.id)"
+         style="padding:25px 10px 1px 10px !important;cursor: pointer">
+      <div class="row">
+        <div class="col-12 text-center">
+          <h3 class="font-weight-bold text-white"
+              style="max-width: 100%; overflow: hidden;text-overflow: ellipsis;">{{cls.className}}</h3>
+          <h5 class="text-dark">Total Student: <span>{{ cls.students.length }}</span></h5>
+        </div>
+      </div>
+      <div class="row text-center">
+        <div class="col-sm-12 text-center">
+          <p class="text-white ">{{'class_code' | translate}} :
+            <span class="font-weight-bold">{{cls.classCode}}</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

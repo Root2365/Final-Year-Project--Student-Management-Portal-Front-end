@@ -1,0 +1,11 @@
+/* You can add global styles to this file, and also import other style files */
+.bg-base-color{
+  background-color: #322B7D;
+}
+.bg-base-color2{
+  background-color: #ef9c0a;
+}
+
+.text-base-color2{
+  color: #ef9c0a !important;
+}

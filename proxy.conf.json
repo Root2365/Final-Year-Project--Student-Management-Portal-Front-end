@@ -1,0 +1,6 @@
+{
+  "api/auth/stripe": {
+    "target": "http://localhost:8888/",
+    "secure": false
+  }
+}

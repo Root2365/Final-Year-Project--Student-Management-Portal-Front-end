@@ -1,0 +1,21 @@
+<div class="row">
+  <div class="col-sm-12">
+    <div class="card">
+      <div class="card-body">
+        <ngb-tabset [justify]="currentJustify">
+          <ngb-tab title="{{'rating' | translate}}">
+            <ng-template ngbTabContent>
+              <app-child-rating></app-child-rating>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab>
+            <ng-template ngbTabTitle><b>{{"activity" | translate}}</b></ng-template>
+            <ng-template ngbTabContent>
+              <app-child-class-activity></app-child-class-activity>
+            </ng-template>
+          </ngb-tab>
+        </ngb-tabset>
+      </div>
+    </div>
+  </div>
+</div>

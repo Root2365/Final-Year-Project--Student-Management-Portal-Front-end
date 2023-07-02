@@ -1,0 +1,148 @@
+<ngx-spinner fullScreen="false">
+  <p style="font-size: 20px; color: white">Processing...</p>
+</ngx-spinner>
+<div class="row">
+
+  <div class="col-sm-3">
+    <select class="form-control" (change)="updateCatName();getClasses()" [(ngModel)]="selectedCatId" #catId>
+      <option *ngFor="let cat of categories" value="{{cat.id}}">{{cat.name}}</option>
+    </select>
+  </div>
+
+  <div class="col-sm-3">
+    <select class="form-control" (change)="updateClassName()" [(ngModel)]="selectedClassId" #classId>
+      <option *ngFor="let cls of classes" value="{{cls.id}}">{{cls.className}}</option>
+    </select>
+  </div>
+
+
+  <div class="col-sm-1">
+    <button class="btn btn-info" (click)="filterFolders(classId.value, catId.value)"><i
+      class="fa fa-search-plus"></i> Search
+    </button>
+  </div>
+
+  <div class="col-sm-5 text-right">
+    <button class="btn btn-rounded btn-primary" (click)="open(file_create_modal)">
+      <i class="fa fa-plus-circle"></i> Create Folder/Files
+    </button>
+  </div>
+</div>
+<hr>
+
+<ng-container *ngFor="let root of rootFolders">
+  <div class="container-fluid" style="padding: 0; margin: 0 auto">
+    <div class="card">
+      <div class="card-header bg-{{root.allowed == true ? 'success': 'danger'}} text-white d-flex align-items-center">
+        <span>{{root.type}}</span>
+        <div class="text-right" style="margin-left: 20px;cursor: pointer" (click)="delete(root.id)">
+          <i class="fa fa-trash-alt text-danger"></i>
+        </div>
+
+        <div class="text-right" style="margin-left: 20px;cursor: pointer" (click)="openModal(root.id,root.name, file_edit_modal)">
+          <i class="fa fa-edit text-primary"></i>
+        </div>
+      </div>
+
+      <div class="card-body  border-left-2">
+        <h5 class="card-title text-secondary" style="cursor: pointer"
+            (click)="gotoSub(root.id, classId.value, catId.value)">{{root.name}}</h5>
+        <div class="d-flex align-items-center">
+          <span class="card-text mr-2"><b>Created By</b>: <span>{{root.teacher}}</span></span>
+          <span class="card-text mr-2"><b>Category</b>: <span>{{root.categoryName}}</span></span>
+          <span class="card-text mr-2"><b>Class</b>: <span>{{root.className}}</span></span>
+          <div class="ml-auto">
+<!--            <div class="form-check form-check-inline">-->
+<!--              <input class="form-check-input" type="checkbox" id="allowUpload" #permission-->
+<!--                     [checked]="root.allowed" (change)="updateUploadPermission(root.id, permission.checked)">-->
+<!--              <label class="form-check-label" for="allowUpload">Allow Upload</label>-->
+<!--            </div>-->
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" id="important" #importance
+                     [checked]="root.important" (change)="updateImportance(root.id, importance.checked)">
+              <label class="form-check-label" for="important">Important</label>
+            </div>
+          </div>
+        </div>
+        <span class="card-text mr-2"><b>Total Items</b>: <span
+          class="badge badge-pill badge-warning">{{root.numOfChild}}</span></span>
+      </div>
+
+    </div>
+  </div>
+</ng-container>
+
+
+<ng-template #file_create_modal let-modal style="max-width: 400px !important;">
+  <div class="modal-header">
+    <h4 class="modal-title">Create Folder</h4>
+    <button class="btn btn-xs rounded btn-outline-danger" aria-label="Close" (click)="modal.dismiss('Cross click')">X
+    </button>
+  </div>
+  <div class="modal-body" style="padding: 30px 25px">
+    <div class="row">
+      <div class="col-sm-6">
+        <label>Category</label>
+        <select class="form-control" (change)="getClasses()" [(ngModel)]="selectedCatId" #catId>
+          <option *ngFor="let cat of categories" value="{{cat.id}}">{{cat.name}}</option>
+        </select>
+      </div>
+      <div class="col-sm-6">
+        <label>Classes</label>
+        <ng-multiselect-dropdown
+          [placeholder]="'Select a Class'"
+          [settings]="dropdownSettings"
+          [data]="dropdownList"
+          [(ngModel)]="selectedItems"
+          (onSelect)="onItemSelect($event)"
+          (onSelectAll)="onSelectAll($event)"
+          (onDeSelect)="onDeSelect($event)"
+          (onDeSelectAll)="onDeSelectAll()"
+        >
+        </ng-multiselect-dropdown>
+      </div>
+
+    </div>
+
+    <div class="row" style="margin-top: 10px">
+      <div class="col-sm-12">
+        <label>Name</label>
+        <input class="form-control" #name type="text" placeholder="Name...">
+      </div>
+    </div>
+    <br>
+    <div class="row justify-content-end">
+      <button class="btn btn-rounded btn-primary" (click)="createFolder(name.value)">
+        <i class="fa fa-plus-circle"></i> Create
+      </button>
+    </div>
+  </div>
+
+</ng-template>
+
+
+<ng-template #file_edit_modal let-modal style="max-width: 400px !important;">
+  <div class="modal-header">
+    <h4 class="modal-title">Edit</h4>
+    <button class="btn btn-xs rounded btn-outline-danger" aria-label="Close" (click)="modal.dismiss('Cross click')">X
+    </button>
+  </div>
+  <div class="modal-body" style="padding: 30px 25px">
+    <div class="row" style="margin-top: 10px">
+      <div class="col-sm-12">
+        <label>Name</label>
+        <input class="form-control" #update_name value="{{updateNameFile}}" type="text" placeholder="Name...">
+      </div>
+    </div>
+    <br>
+    <div class="row justify-content-end">
+      <button class="btn btn-rounded btn-primary" (click)="updateName(update_name.value)">
+        <i class="fa fa-plus-circle"></i> Update
+      </button>
+    </div>
+  </div>
+
+</ng-template>
+
+
+
